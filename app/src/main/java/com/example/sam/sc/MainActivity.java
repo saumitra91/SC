@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -13,7 +14,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 public class MainActivity extends Activity implements View.OnClickListener {
     private static final int RC_BARCODE_CAPTURE = 9001;
     private static final String TAG = "BarcodeMain";
-    //
+    private ListView listView;
 //    private CompoundButton autoFocus;
 //    private CompoundButton useFlash;
     private TextView statusMessage;
@@ -31,6 +32,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //        useFlash = (CompoundButton) findViewById(R.id.use_flash);
 
         findViewById(R.id.addItem).setOnClickListener(this);
+
 
     }
 
