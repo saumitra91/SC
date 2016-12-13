@@ -3,15 +3,19 @@ package com.example.sam.sc;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainFragment extends Fragment implements View.OnClickListener {
     private static final int RC_BARCODE_CAPTURE = 9001;
     private static final String TAG = "BarcodeMain";
     private ListView listView;
@@ -20,20 +24,31 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView statusMessage;
     private TextView barcodeValue;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public static MainFragment newInstance() {
+        Bundle args = new Bundle();
+        MainFragment fragment = new MainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-        statusMessage = (TextView) findViewById(R.id.status_message);
-        barcodeValue = (TextView) findViewById(R.id.barcode_value);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_main, null);
+        statusMessage = (TextView) view.findViewById(R.id.status_message);
+        barcodeValue = (TextView) view.findViewById(R.id.barcode_value);
 
 //        autoFocus = (CompoundButton) findViewById(R.id.auto_focus);
 //        useFlash = (CompoundButton) findViewById(R.id.use_flash);
 
-        findViewById(R.id.addItem).setOnClickListener(this);
-
-
+        view.findViewById(R.id.addItem).setOnClickListener(this);
+        return view;
     }
 
     @Override
@@ -41,7 +56,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         if (view.getId() == R.id.addItem) {
             // launch barcode activity.
-            Intent intent = new Intent(this, BarcodeCaptureActivity.class);
+            Intent intent = new Intent(getContext(), BarcodeCaptureActivity.class);
 //            intent.putExtra(BarcodeCaptureActivity.AutoFocus, autoFocus.isChecked());
             intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
 //            intent.putExtra(BarcodeCaptureActivity.UseFlash, useFlash.isChecked());
@@ -74,7 +89,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * @see #setResult(int)
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
