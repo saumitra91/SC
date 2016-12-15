@@ -20,6 +20,14 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
   }
 
   @Override
+  public CharSequence getPageTitle(final int position) {
+    if (position == 0) {
+      return "List";
+    }
+    return "Bluetooth";
+  }
+
+  @Override
   public Fragment getItem(final int pos) {
     if (pos == 0) {
       return MainFragment.newInstance();
