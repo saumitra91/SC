@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
+//Kota add 12/13/2016
+//by this line
+
 public class MainActivity extends Activity implements View.OnClickListener {
     private static final int RC_BARCODE_CAPTURE = 9001;
     private static final String TAG = "BarcodeMain";
@@ -24,6 +27,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Kota add 12/13/2016
+
+        //by thi line
 
         statusMessage = (TextView) findViewById(R.id.status_message);
         barcodeValue = (TextView) findViewById(R.id.barcode_value);
