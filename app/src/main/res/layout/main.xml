@@ -74,15 +74,6 @@
                 android:enabled="false"
                 android:text="Forward"></Button>
 
-            <TextView
-                android:id="@+id/listcheck"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_above="@+id/listMessage"
-                android:layout_alignParentStart="true"
-                android:text="You will pay $0"
-                android:textSize="25sp"></TextView>
-
             <Button
                 android:id="@+id/button_check"
                 android:layout_width="wrap_content"
@@ -251,13 +242,23 @@
                 android:padding="12dp"
                 android:text="Connect" />
 
+            <TextView
+                android:id="@+id/listcheck"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/productD"
+                android:layout_marginTop="17dp"
+                android:text="You will pay $0"
+                android:textSize="12sp"></TextView>
+
             <ListView
                 android:id="@+id/listMessage"
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
-                android:layout_above="@+id/btn_select"
+                android:layout_above="@+id/button_check"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/productD"></ListView>
+                android:layout_below="@+id/listcheck"></ListView>
 
 
             //to this line
