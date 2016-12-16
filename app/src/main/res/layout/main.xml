@@ -75,13 +75,15 @@
                 android:text="Forward"></Button>
 
             <Button
-                android:id="@+id/button_check"
+                android:id="@+id/button4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/buttonF"
-                android:layout_alignStart="@+id/productA"
-                android:enabled="true"
-                android:text="Check!"></Button>
+                android:layout_above="@+id/buttonS"
+                android:layout_alignLeft="@+id/buttonS"
+                android:layout_alignStart="@+id/buttonS"
+                android:layout_marginBottom="12dp"
+                android:enabled="false"
+                android:text="Forward"></Button>
 
             <Button
                 android:id="@+id/productA"
@@ -259,6 +261,16 @@
                 android:layout_above="@+id/button_check"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/listcheck"></ListView>
+
+            <Button
+                android:id="@+id/button_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btn_select"
+                android:layout_alignBottom="@+id/btn_select"
+                android:layout_alignParentStart="true"
+                android:enabled="false"
+                android:text="Check"></Button>
 
 
             //to this line
