@@ -60,6 +60,9 @@ import com.google.android.gms.vision.barcode.Barcode;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
     public static final String TAG = "nRFUART";
     private static final int BT_MAIN = 123456;
@@ -93,6 +96,10 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
     private double PriceC = 15;
     private double PriceD = 50;
     private double TotalPrice = 0;
+    private double WeightA = 1;
+    private double WeightB = 2;
+    private double WeightC = 3;
+    private double WeightD = 4;
     private double TotalWeight = 0;
 
 
@@ -149,7 +156,6 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 });
             }
 
-
             //*********************//
             if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
                 runOnUiThread(new Runnable() {
@@ -171,7 +177,7 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                         mcancelPC.setEnabled(true);
                         mcancelPD.setEnabled(true);
 
-                        mbutton_check.setEnabled(true);
+                        mbutton_check.setEnabled(false);
 
                         //********************************
                         ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");
@@ -197,6 +203,10 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                     public void run() {
                         try {
                             String text = new String(txValue, "UTF-8");
+                            boolean flag = false;
+                            if (text.contains("weight")) {
+                                checkweight(text);
+                            }
                             String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                             listAdapter.add("[" + currentDateTimeString + "] RX: " + text);
                             messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
@@ -250,6 +260,59 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
         intentFilter.addAction(UartService.ACTION_DATA_AVAILABLE);
         intentFilter.addAction(UartService.DEVICE_DOES_NOT_SUPPORT_UART);
         return intentFilter;
+    }
+
+    private void checkweight(String text) {
+        TextView weightState = (TextView) findViewById(R.id.weight);
+        String regexString = Pattern.quote("<") + "(.*?\\d+)" + Pattern.quote(">");
+        Pattern pattern = Pattern.compile(regexString);
+// text contains the full text that you want to extract data
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            String textInBetween = matcher.group(1); // Since (.*?) is capturing group 1
+            System.out.println(textInBetween);
+            String flag = null;
+            Double ObtainedWeight = Double.parseDouble(textInBetween);
+            Double Error = (TotalWeight - ObtainedWeight) % 10;
+            System.out.println(Error);
+            if (Error == 0) {
+                flag = "true";
+                weightState.setText("Weight matches!");
+            } else {
+                flag = "false";
+                weightState.setText("Weight doesn't match!");
+            }
+
+            //setting flag to true for testing
+            //when flag is false
+            if (flag.contains("false")) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Weight Mismatch", Toast.LENGTH_SHORT);
+                toast.show();
+
+            }
+            sendBTValue(flag);
+        }
+
+    }
+
+    private void sendBTValue(String stringmessage) {
+        byte[] value;
+        try {
+
+            //send data to service
+            String message = stringmessage;
+            value = message.getBytes("UTF-8");
+            mService.writeRXCharacteristic(value);
+            //Update the log with time stamp
+            String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+            listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+            messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+            edtMessage.setText("");
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -454,6 +517,9 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
             public void onClick(View v) {
                 TextView checkView = (TextView) findViewById(R.id.listcheck);
                 checkView.setText("Thank you!!");
+                TotalWeight = WeightA * mCurrentAmountPA + WeightB * mCurrentAmountPB + WeightC * mCurrentAmountPC + WeightD * mCurrentAmountPD;
+                TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
+
                 sTabPA = 0;
                 sTabPB = 0;
                 sTabPC = 0;
@@ -463,13 +529,13 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 mCurrentAmountPC = sTabPC;
                 mCurrentAmountPD = sTabPD;
                 TextView textViewA = (TextView) findViewById(R.id.listPA);
-                textViewA.setText("Quantity A\n       " + mCurrentAmountPA);
+                textViewA.setText("Hand Sanitizer\n       " + mCurrentAmountPA);
                 TextView textViewB = (TextView) findViewById(R.id.listPB);
-                textViewB.setText("Quantity B\n       " + mCurrentAmountPB);
+                textViewB.setText("Deodorant\n       " + mCurrentAmountPB);
                 TextView textViewC = (TextView) findViewById(R.id.listPA);
-                textViewC.setText("Quantity C\n       " + mCurrentAmountPC);
+                textViewC.setText("Chapstick\n       " + mCurrentAmountPC);
                 TextView textViewD = (TextView) findViewById(R.id.listPD);
-                textViewD.setText("Quantity D\n       " + mCurrentAmountPD);
+                textViewD.setText("Random\n       " + mCurrentAmountPD);
                 //       String message = "check\r\n";
                 //       byte[] value;
                 //       try{
@@ -650,10 +716,9 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 mCurrentAmountPD = sTabPD;
                 TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
                 TextView textView = (TextView) findViewById(R.id.listPD);
-                textView.setText("Quantity D\n       " + mCurrentAmountPD);
+                textView.setText("Random\n       " + mCurrentAmountPD);
                 TextView checkView = (TextView) findViewById(R.id.listcheck);
                 checkView.setText("You will pay $" + TotalPrice);
-
 
                 //     String message = "-40\r\n";
                 //     byte[] value;
@@ -785,6 +850,7 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                         if (barcode.displayValue.equals("036800236707")) {
                             // statusMessage.setText(R.string.barcode_success);
                             //MainActivity.barcodeValue.setText(barcode.displayValue);
+
                             sTabPA++;
                             mCurrentAmountPA = sTabPA;
                             TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
