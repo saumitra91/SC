@@ -281,7 +281,7 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 weightState.setText("Weight matches!");
             } else {
                 flag = "false";
-                weightState.setText("Weight doesn't match!");
+                weightState.setText("Weight mismatch!");
             }
 
             //setting flag to true for testing
