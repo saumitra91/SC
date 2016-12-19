@@ -2,26 +2,38 @@ package com.example.sam.sc;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.vision.barcode.Barcode;
 
 //Kota add 12/13/2016
 //by this line
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    private static final int RC_BARCODE_CAPTURE = 9001;
+    public static final int RC_BARCODE_CAPTURE = 9001;
     private static final String TAG = "BarcodeMain";
-    private ListView listView;
-//    private CompoundButton autoFocus;
+    private static int Counter_A = 0;
+    //    private CompoundButton autoFocus;
 //    private CompoundButton useFlash;
-    private TextView statusMessage;
+    public TextView statusMessage;
+    private ListView listView;
     private TextView barcodeValue;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+    private int Amount_A = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +51,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //        useFlash = (CompoundButton) findViewById(R.id.use_flash);
 
         findViewById(R.id.addItem).setOnClickListener(this);
+        findViewById(R.id.button4).setOnClickListener(this);
 
-
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -57,6 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
     }
+
 
     /**
      * Called when an activity you launched exits, giving you the requestCode
@@ -85,10 +101,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (requestCode == RC_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
+
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     statusMessage.setText(R.string.barcode_success);
                     barcodeValue.setText(barcode.displayValue);
                     Log.d(TAG, "Barcode read: " + barcode.displayValue);
+
+
+                    Counter_A++;
+                    Amount_A = Counter_A;
+                    TextView textView = (TextView) findViewById(R.id.listPA);
+                    textView.setText("Quantity A\n       " + Amount_A);
+
+
                 } else {
                     statusMessage.setText(R.string.barcode_failure);
                     Log.d(TAG, "No barcode captured, intent data is null");
@@ -100,5 +125,41 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 }

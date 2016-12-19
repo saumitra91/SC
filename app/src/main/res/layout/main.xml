@@ -75,52 +75,29 @@
                 android:text="Forward"></Button>
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/btn_select"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/buttonS"
-                android:layout_alignLeft="@+id/buttonS"
-                android:layout_alignStart="@+id/buttonS"
-                android:layout_marginBottom="12dp"
-                android:enabled="false"
-                android:text="Forward"></Button>
+                android:layout_alignStart="@+id/buttonF"
+                android:layout_below="@+id/listMessage"
+                android:padding="12dp"
+                android:text="Connect" />
 
             <Button
-                android:id="@+id/productA"
+                android:id="@+id/button_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_above="@+id/buttonF"
+                android:layout_alignStart="@+id/productA"
                 android:enabled="true"
-                android:text="A 10$" />
+                android:text="Check!"></Button>
 
-            <Button
-                android:id="@+id/productC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/productB"
-
-                android:enabled="true"
-                android:text="C 15$" />
-
-            <Button
-                android:id="@+id/productB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/productA"
-
-                android:enabled="true"
-                android:text="B 5$" />
-
-            <Button
-                android:id="@+id/productD"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/productC"
-                android:enabled="true"
-                android:text="D 50$" />
+            <ListView
+                android:id="@+id/listMessage"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_above="@+id/button_check"
+                android:layout_alignParentEnd="true"></ListView>
 
             <Button
                 android:id="@+id/cancelPC"
@@ -148,7 +125,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/frame_style"
-                android:text="Quantity A\n       0"
+                android:text="Hand Sanitizer x 0\n$0.00"
+                android:textAlignment="center"
                 android:textColor="#00b489"
                 android:textSize="20sp" />
 
@@ -161,7 +139,8 @@
                 android:layout_alignStart="@+id/listPA"
                 android:layout_below="@+id/listPA"
                 android:background="@drawable/frame_style"
-                android:text="Quantity B\n       0"
+                android:text="Deodorant x 0\n$0.00"
+                android:textAlignment="center"
                 android:textColor="#00b489"
                 android:textSize="20sp" />
 
@@ -171,11 +150,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/cancelPD"
+                android:layout_alignParentEnd="true"
                 android:layout_alignStart="@+id/listPC"
                 android:layout_below="@+id/listPC"
                 android:background="@drawable/frame_style"
-                android:text="Quantity D\n       0"
+                android:text="Quantity D x 0\n$0.00"
 
+                android:textAlignment="center"
                 android:textColor="#00b489"
                 android:textSize="20sp" />
 
@@ -194,10 +175,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/productD"
+                android:layout_alignParentEnd="true"
                 android:layout_alignStart="@+id/listPB"
                 android:layout_below="@+id/listPB"
                 android:background="@drawable/frame_style"
-                android:text="Quantity C\n       0"
+                android:text="Chapstick x 0\n$0.00"
+                android:textAlignment="center"
                 android:textColor="#00b489"
                 android:textSize="20sp" />
 
@@ -235,42 +218,23 @@
                 android:shadowRadius="1" />
 
             <Button
-                android:id="@+id/btn_select"
+                android:id="@+id/button4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/buttonF"
-                android:layout_alignEnd="@+id/buttonF"
-                android:layout_marginBottom="11dp"
-                android:padding="12dp"
-                android:text="Connect" />
+                android:layout_above="@+id/sendButton"
+                android:layout_alignParentEnd="true"
+                android:onClick="Get_Barcode"
+                android:text="Scan Item" />
 
             <TextView
                 android:id="@+id/listcheck"
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/productD"
-                android:layout_marginTop="17dp"
+                android:layout_below="@+id/cancelPD"
+                android:layout_marginTop="15dp"
                 android:text="You will pay $0"
-                android:textSize="12sp"></TextView>
-
-            <ListView
-                android:id="@+id/listMessage"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_above="@+id/button_check"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/listcheck"></ListView>
-
-            <Button
-                android:id="@+id/button_check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_select"
-                android:layout_alignBottom="@+id/btn_select"
-                android:layout_alignParentStart="true"
-                android:enabled="false"
-                android:text="Check"></Button>
+                android:textSize="10sp"></TextView>
 
 
             //to this line

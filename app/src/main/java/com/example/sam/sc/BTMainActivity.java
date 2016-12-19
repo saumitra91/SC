@@ -54,12 +54,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.barcode.Barcode;
+
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
     public static final String TAG = "nRFUART";
     private static final int BT_MAIN = 123456;
@@ -93,29 +93,20 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
     private double PriceC = 15;
     private double PriceD = 50;
     private double TotalPrice = 0;
-    private double WeightA = 1;
-    private double WeightB = 2;
-    private double WeightC = 3;
-    private double WeightD = 4;
     private double TotalWeight = 0;
+
+
     private Button mbuttonF;
     private Button mbuttonR;
     private Button mbuttonL;
     private Button mbuttonS;
     private Button mbuttonB;
-    private Button mbuttonPA;
-    private Button mbuttonPB;
-    private Button mbuttonPC;
-    private Button mbuttonPD;
-    private Button mbuttonPE;
-    private Button mbuttonPF;
+
     private Button mcancelPA;
     private Button mcancelPB;
     private Button mcancelPC;
     private Button mcancelPD;
     private Button mbutton_check;
-
-
     //by this line
 
     private EditText edtMessage;
@@ -143,18 +134,12 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                         mbuttonL.setEnabled(true);
                         mbuttonS.setEnabled(true);
                         mbuttonR.setEnabled(true);
-                        mbutton_check.setEnabled(true);
-                        mbuttonPA.setEnabled(true);
-                        mbuttonPB.setEnabled(true);
-                        mbuttonPC.setEnabled(true);
-                        mbuttonPD.setEnabled(true);
-                        // mbuttonPE.setEnabled(true);
-                        // mbuttonPF.setEnabled(true);
+
                         mcancelPA.setEnabled(true);
                         mcancelPB.setEnabled(true);
                         mcancelPC.setEnabled(true);
                         mcancelPD.setEnabled(true);
-
+                        mbutton_check.setEnabled(true);
                         //**************************:
                         ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - ready");
                         listAdapter.add("[" + currentDateTimeString + "] Connected to: " + mDevice.getName());
@@ -163,6 +148,7 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                     }
                 });
             }
+
 
             //*********************//
             if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
@@ -179,19 +165,13 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                         mbuttonL.setEnabled(false);
                         mbuttonS.setEnabled(false);
                         mbuttonR.setEnabled(false);
-                        mbutton_check.setEnabled(false);
-                        mbuttonPA.setEnabled(true);
-                        mbuttonPB.setEnabled(true);
-                        mbuttonPC.setEnabled(true);
-                        mbuttonPD.setEnabled(true);
-                        //  mbuttonPE.setEnabled(false);
-                        //  mbuttonPF.setEnabled(false);
+
                         mcancelPA.setEnabled(true);
                         mcancelPB.setEnabled(true);
                         mcancelPC.setEnabled(true);
                         mcancelPD.setEnabled(true);
 
-
+                        mbutton_check.setEnabled(true);
 
                         //********************************
                         ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");
@@ -217,10 +197,6 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                     public void run() {
                         try {
                             String text = new String(txValue, "UTF-8");
-                            boolean flag = false;
-                            if (text.contains("weight")) {
-                                checkweight(text);
-                            }
                             String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                             listAdapter.add("[" + currentDateTimeString + "] RX: " + text);
                             messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
@@ -276,39 +252,6 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
         return intentFilter;
     }
 
-    private void checkweight(String text) {
-        String regexString = Pattern.quote("<") + "(.*?\\d+)" + Pattern.quote(">");
-        Pattern pattern = Pattern.compile(regexString);
-// text contains the full text that you want to extract data
-        Matcher matcher = pattern.matcher(text);
-
-        while (matcher.find()) {
-            String textInBetween = matcher.group(1); // Since (.*?) is capturing group 1
-            System.out.println(textInBetween);
-            String flag = null;
-            //TODO Insert weight compare logic here with error
-            //setting flag to true for testing
-            flag = "true";
-            byte[] value;
-            try {
-
-                //send data to service
-                String message = flag;
-                value = message.getBytes("UTF-8");
-                mService.writeRXCharacteristic(value);
-                //Update the log with time stamp
-                String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                edtMessage.setText("");
-            } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -341,12 +284,6 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
         mbuttonR = (Button) findViewById(R.id.buttonR);
         mbuttonS = (Button) findViewById(R.id.buttonS);
 
-        mbuttonPA = (Button) findViewById(R.id.productA);
-        mbuttonPB = (Button) findViewById(R.id.productB);
-        mbuttonPC = (Button) findViewById(R.id.productC);
-        mbuttonPD = (Button) findViewById(R.id.productD);
-        // mbuttonPE = (Button) findViewById(R.id.productE);
-        // mbuttonPF = (Button) findViewById(R.id.productF);
 
         mcancelPA = (Button) findViewById(R.id.cancelPA);
         mcancelPB = (Button) findViewById(R.id.cancelPB);
@@ -517,9 +454,6 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
             public void onClick(View v) {
                 TextView checkView = (TextView) findViewById(R.id.listcheck);
                 checkView.setText("Thank you!!");
-                TotalWeight = WeightA * mCurrentAmountPA + WeightB * mCurrentAmountPB + WeightC * mCurrentAmountPC + WeightD * mCurrentAmountPD;
-                TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
-
                 sTabPA = 0;
                 sTabPB = 0;
                 sTabPC = 0;
@@ -536,35 +470,25 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 textViewC.setText("Quantity C\n       " + mCurrentAmountPC);
                 TextView textViewD = (TextView) findViewById(R.id.listPD);
                 textViewD.setText("Quantity D\n       " + mCurrentAmountPD);
-
-                String message = "check weight:" + String.valueOf(TotalWeight);
-                byte[] value;
-                try {
-                    //send data to service
-                    value = message.getBytes("UTF-8");
-                    mService.writeRXCharacteristic(value);
-                    //Update the log with time stamp
-                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    edtMessage.setText("");
-                } catch (UnsupportedEncodingException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                //       String message = "check\r\n";
+                //       byte[] value;
+                //       try{
+                //           //send data to service
+                //           value = message.getBytes("UTF-8");
+                //           mService.writeRXCharacteristic(value);
+                //           //Update the log with time stamp
+                //           String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                //           listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+                //           messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                //           edtMessage.setText("");
+                //       } catch (UnsupportedEncodingException e) {
+                //           // TODO Auto-generated catch block
+                //           e.printStackTrace();
+                //       }
 
             }
         });
 
-        mbuttonPA.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                sTabPA++;
-                mCurrentAmountPA = sTabPA;
-                TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
-                TextView textView = (TextView) findViewById(R.id.listPA);
-                textView.setText("Quantity A\n       " + mCurrentAmountPA);
-                TextView checkView = (TextView) findViewById(R.id.listcheck);
-                checkView.setText("You will pay &" + TotalPrice);
 
                 //Bluetooth part*******************************:
                 //    String message = "10\r\n";
@@ -583,17 +507,16 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 //       e.printStackTrace();
                 //   }
                 //***************************************************
-            }
-        });
+
         mcancelPA.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sTabPA--;
                 mCurrentAmountPA = sTabPA;
                 TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
                 TextView textView = (TextView) findViewById(R.id.listPA);
-                textView.setText("Quantity A\n       " + mCurrentAmountPA);
+                textView.setText("Hand Sanitizer x " + sTabPA + "\n$" + mCurrentAmountPA * PriceA + "0");
                 TextView checkView = (TextView) findViewById(R.id.listcheck);
-                checkView.setText("You will pay $" + TotalPrice);
+                checkView.setText("You will pay $" + TotalPrice + "0");
 
                 //      String message = "-10\r\n";
                 //      byte[] value;
@@ -613,43 +536,32 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
             }
         });
 
-        mbuttonPB.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                sTabPB++;
-                mCurrentAmountPB = sTabPB;
-                TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
-                TextView textView = (TextView) findViewById(R.id.listPB);
-                textView.setText("Quantity B\n       " + mCurrentAmountPB);
-                TextView checkView = (TextView) findViewById(R.id.listcheck);
-                checkView.setText("You will pay $" + TotalPrice);
 
-                //       String message = "20\r\n";
-                //       byte[] value;
-                //       try{
-                //           //send data to service
-                //           value = message.getBytes("UTF-8");
-                //           mService.writeRXCharacteristic(value);
-                //           //Update the log with time stamp
-                //           String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                //           listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                //           messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                //           edtMessage.setText("");
-                //       } catch (UnsupportedEncodingException e) {
-                //           // TODO Auto-generated catch block
-                //           e.printStackTrace();
-                //       }
+        //       String message = "20\r\n";
+        //       byte[] value;
+        //       try{
+        //           //send data to service
+        //           value = message.getBytes("UTF-8");
+        //           mService.writeRXCharacteristic(value);
+        //           //Update the log with time stamp
+        //           String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+        //           listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+        //           messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+        //           edtMessage.setText("");
+        //       } catch (UnsupportedEncodingException e) {
+        //           // TODO Auto-generated catch block
+        //           e.printStackTrace();
+        //       }
 
-            }
-        });
         mcancelPB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sTabPB--;
                 mCurrentAmountPB = sTabPB;
                 TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
                 TextView textView = (TextView) findViewById(R.id.listPB);
-                textView.setText("Quantity B\n       " + mCurrentAmountPB);
+                textView.setText("Deodorant x " + sTabPB + "\n$" + mCurrentAmountPB * PriceB + "0");
                 TextView checkView = (TextView) findViewById(R.id.listcheck);
-                checkView.setText("You will pay $" + TotalPrice);
+                checkView.setText("You will pay $" + TotalPrice + "0");
 
                 //      String message = "-20\r\n";
                 //      byte[] value;
@@ -670,43 +582,31 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
             }
         });
 
-        mbuttonPC.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                sTabPC++;
-                mCurrentAmountPC = sTabPC;
-                TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
-                TextView textView = (TextView) findViewById(R.id.listPC);
-                textView.setText("Quantity C\n       " + mCurrentAmountPC);
-                TextView checkView = (TextView) findViewById(R.id.listcheck);
-                checkView.setText("You will pay $" + TotalPrice);
+        //       String message = "30\r\n";
+        //       byte[] value;
+        //       try{
+        //           //send data to service
+        //           value = message.getBytes("UTF-8");
+        //           mService.writeRXCharacteristic(value);
+        //           //Update the log with time stamp
+        //           String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+        //           listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+        //           messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+        //           edtMessage.setText("");
+        //       } catch (UnsupportedEncodingException e) {
+        //           // TODO Auto-generated catch block
+        //           e.printStackTrace();
+        //       }
 
-                //       String message = "30\r\n";
-                //       byte[] value;
-                //       try{
-                //           //send data to service
-                //           value = message.getBytes("UTF-8");
-                //           mService.writeRXCharacteristic(value);
-                //           //Update the log with time stamp
-                //           String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                //           listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                //           messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                //           edtMessage.setText("");
-                //       } catch (UnsupportedEncodingException e) {
-                //           // TODO Auto-generated catch block
-                //           e.printStackTrace();
-                //       }
-
-            }
-        });
         mcancelPC.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sTabPC--;
                 mCurrentAmountPC = sTabPC;
                 TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
                 TextView textView = (TextView) findViewById(R.id.listPC);
-                textView.setText("Quantity C\n       " + mCurrentAmountPC);
+                textView.setText("Chapstick x " + sTabPC + "\n$" + mCurrentAmountPC * PriceC + "0");
                 TextView checkView = (TextView) findViewById(R.id.listcheck);
-                checkView.setText("You will pay $" + TotalPrice);
+                checkView.setText("You will pay $" + TotalPrice + "0");
 
                 //       String message = "-30\r\n";
                 //       byte[] value;
@@ -726,35 +626,24 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
 
             }
         });
-        mbuttonPD.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                sTabPD++;
-                mCurrentAmountPD = sTabPD;
-                TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
-                TextView textView = (TextView) findViewById(R.id.listPD);
-                textView.setText("Quantity D\n       " + mCurrentAmountPD);
-                TextView checkView = (TextView) findViewById(R.id.listcheck);
-                checkView.setText("You will pay $" + TotalPrice);
-
-                //      String message = "40\r\n";
-                //      byte[] value;
-                //      try{
-                //          //send data to service
-                //          value = message.getBytes("UTF-8");
-                //          mService.writeRXCharacteristic(value);
-                //          //Update the log with time stamp
-                //          String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                //          listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                //          messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                //          edtMessage.setText("");
-                //      } catch (UnsupportedEncodingException e) {
-                //          // TODO Auto-generated catch block
-                //          e.printStackTrace();
-                //       }
 
 
-            }
-        });
+        //      String message = "40\r\n";
+        //      byte[] value;
+        //      try{
+        //          //send data to service
+        //          value = message.getBytes("UTF-8");
+        //          mService.writeRXCharacteristic(value);
+        //          //Update the log with time stamp
+        //          String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+        //          listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+        //          messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+        //          edtMessage.setText("");
+        //      } catch (UnsupportedEncodingException e) {
+        //          // TODO Auto-generated catch block
+        //          e.printStackTrace();
+        //       }
+
         mcancelPD.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sTabPD--;
@@ -764,6 +653,7 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 textView.setText("Quantity D\n       " + mCurrentAmountPD);
                 TextView checkView = (TextView) findViewById(R.id.listcheck);
                 checkView.setText("You will pay $" + TotalPrice);
+
 
                 //     String message = "-40\r\n";
                 //     byte[] value;
@@ -872,10 +762,63 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
         super.onConfigurationChanged(newConfig);
     }
 
+    public void Get_Barcode(View view) {
+
+        Intent intent = new Intent(this, BarcodeCaptureActivity.class);
+//            intent.putExtra(BarcodeCaptureActivity.AutoFocus, autoFocus.isChecked());
+        intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
+//            intent.putExtra(BarcodeCaptureActivity.UseFlash, useFlash.isChecked());
+
+        startActivityForResult(intent, MainActivity.RC_BARCODE_CAPTURE);
+
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            case MainActivity.RC_BARCODE_CAPTURE:
+                if (resultCode == CommonStatusCodes.SUCCESS) {
+                    if (data != null) {
 
+                        Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                        if (barcode.displayValue.equals("036800236707")) {
+                            // statusMessage.setText(R.string.barcode_success);
+                            //MainActivity.barcodeValue.setText(barcode.displayValue);
+                            sTabPA++;
+                            mCurrentAmountPA = sTabPA;
+                            TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
+                            TextView checkView = (TextView) findViewById(R.id.listcheck);
+                            checkView.setText("You will pay $" + TotalPrice + "0");
+                            TextView textView = (TextView) findViewById(R.id.listPA);
+                            textView.setText("Hand Sanitizer x " + sTabPA + "\n$" + mCurrentAmountPA * PriceA + "0");
+                        }
+                        if (barcode.displayValue.equals("012044038918")) {
+                            // statusMessage.setText(R.string.barcode_success);
+                            //MainActivity.barcodeValue.setText(barcode.displayValue);
+                            sTabPB++;
+                            mCurrentAmountPB = sTabPB;
+                            TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
+                            TextView checkView = (TextView) findViewById(R.id.listcheck);
+                            checkView.setText("You will pay $" + TotalPrice + "0");
+                            TextView textView = (TextView) findViewById(R.id.listPB);
+                            textView.setText("Deodorant x " + sTabPB + "\n$" + mCurrentAmountPB * PriceB + "0");
+                        }
+                        if (barcode.displayValue.equals("792850157996")) {
+                            // statusMessage.setText(R.string.barcode_success);
+                            //MainActivity.barcodeValue.setText(barcode.displayValue);
+                            sTabPC++;
+                            mCurrentAmountPC = sTabPC;
+                            TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
+                            TextView checkView = (TextView) findViewById(R.id.listcheck);
+                            checkView.setText("You will pay $" + TotalPrice + "0");
+                            TextView textView = (TextView) findViewById(R.id.listPC);
+                            textView.setText("Chapstick x " + sTabPC + "\n$" + mCurrentAmountPC * PriceC + "0");
+                        }
+
+                    }
+                }
+                break;
             case REQUEST_SELECT_DEVICE:
                 //When the DeviceListActivity return, with the selected device address
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -942,4 +885,5 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                     .show();
         }
     }
+
 }
