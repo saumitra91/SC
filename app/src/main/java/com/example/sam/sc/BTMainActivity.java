@@ -287,7 +287,7 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
             //setting flag to true for testing
             //when flag is false
             if (flag.contains("false")) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Weight Mismatch", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "Weight Mismatch,Please Remove or Scan Item", Toast.LENGTH_SHORT);
                 toast.show();
 
             }
@@ -529,13 +529,13 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                 mCurrentAmountPC = sTabPC;
                 mCurrentAmountPD = sTabPD;
                 TextView textViewA = (TextView) findViewById(R.id.listPA);
-                textViewA.setText("Hand Sanitizer\n       " + mCurrentAmountPA);
+                textViewA.setText("Chapstick x " + sTabPA + "\n$" + mCurrentAmountPA * PriceA + "0");
                 TextView textViewB = (TextView) findViewById(R.id.listPB);
-                textViewB.setText("Deodorant\n       " + mCurrentAmountPB);
+                textViewB.setText("Deodorant x " + sTabPB + "\n$" + mCurrentAmountPB * PriceB + "0");
                 TextView textViewC = (TextView) findViewById(R.id.listPA);
-                textViewC.setText("Chapstick\n       " + mCurrentAmountPC);
+                textViewC.setText("Chapstick x " + sTabPC + "\n$" + mCurrentAmountPC * PriceC + "0");
                 TextView textViewD = (TextView) findViewById(R.id.listPD);
-                textViewD.setText("Random\n       " + mCurrentAmountPD);
+                textViewD.setText("Cards x " + sTabPD + "\n$" + mCurrentAmountPD * PriceD + "0");
                 //       String message = "check\r\n";
                 //       byte[] value;
                 //       try{
@@ -880,6 +880,17 @@ public class BTMainActivity extends Activity implements RadioGroup.OnCheckedChan
                             checkView.setText("You will pay $" + TotalPrice + "0");
                             TextView textView = (TextView) findViewById(R.id.listPC);
                             textView.setText("Chapstick x " + sTabPC + "\n$" + mCurrentAmountPC * PriceC + "0");
+                        }
+                        if (barcode.displayValue.equals("097257783381")) {
+                            // statusMessage.setText(R.string.barcode_success);
+                            //MainActivity.barcodeValue.setText(barcode.displayValue);
+                            sTabPD++;
+                            mCurrentAmountPD = sTabPD;
+                            TotalPrice = PriceA * mCurrentAmountPA + PriceB * mCurrentAmountPB + PriceC * mCurrentAmountPC + PriceD * mCurrentAmountPD;
+                            TextView checkView = (TextView) findViewById(R.id.listcheck);
+                            checkView.setText("You will pay $" + TotalPrice + "0");
+                            TextView textView = (TextView) findViewById(R.id.listPD);
+                            textView.setText("Cards x " + sTabPD + "\n$" + mCurrentAmountPD * PriceD + "0");
                         }
 
                     }
