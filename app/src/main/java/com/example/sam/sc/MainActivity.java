@@ -14,7 +14,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.vision.barcode.Barcode;
 
 //Kota add 12/13/2016
 //by this line
@@ -50,8 +49,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //        autoFocus = (CompoundButton) findViewById(R.id.auto_focus);
 //        useFlash = (CompoundButton) findViewById(R.id.use_flash);
 
-        findViewById(R.id.addItem).setOnClickListener(this);
-        findViewById(R.id.button4).setOnClickListener(this);
+//        findViewById(R.id.addItem).setOnClickListener(this);
+//        findViewById(R.id.button4).setOnClickListener(this);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -102,16 +101,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
 
-                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    statusMessage.setText(R.string.barcode_success);
-                    barcodeValue.setText(barcode.displayValue);
-                    Log.d(TAG, "Barcode read: " + barcode.displayValue);
-
-
-                    Counter_A++;
-                    Amount_A = Counter_A;
-                    TextView textView = (TextView) findViewById(R.id.listPA);
-                    textView.setText("Quantity A\n       " + Amount_A);
+//                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+//                    statusMessage.setText(R.string.barcode_success);
+//                    barcodeValue.setText(barcode.displayValue);
+//                    Log.d(TAG, "Barcode read: " + barcode.displayValue);
+//
+//
+//                    Counter_A++;
+//                    Amount_A = Counter_A;
+//                    TextView textView = (TextView) findViewById(R.id.listPA);
+//                    textView.setText("Quantity A\n       " + Amount_A);
 
 
                 } else {
