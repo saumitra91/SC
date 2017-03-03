@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,9 +11,7 @@ import android.widget.TextView;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.vision.barcode.Barcode;
 
 //Kota add 12/13/2016
 //by this line
@@ -27,7 +24,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //    private CompoundButton useFlash;
     public TextView statusMessage;
     private ListView listView;
-    private TextView barcodeValue;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -45,13 +41,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //by thi line
 
         statusMessage = (TextView) findViewById(R.id.status_message);
-        barcodeValue = (TextView) findViewById(R.id.barcode_value);
 
+
+//        graph.addSeries(series);
 //        autoFocus = (CompoundButton) findViewById(R.id.auto_focus);
 //        useFlash = (CompoundButton) findViewById(R.id.use_flash);
 
-        findViewById(R.id.addItem).setOnClickListener(this);
-        findViewById(R.id.button4).setOnClickListener(this);
+//        findViewById(R.id.addItem).setOnClickListener(this);
+//        findViewById(R.id.button4).setOnClickListener(this);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -61,15 +58,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-        if (view.getId() == R.id.addItem) {
-            // launch barcode activity.
-            Intent intent = new Intent(this, BarcodeCaptureActivity.class);
-//            intent.putExtra(BarcodeCaptureActivity.AutoFocus, autoFocus.isChecked());
-            intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
-//            intent.putExtra(BarcodeCaptureActivity.UseFlash, useFlash.isChecked());
-
-            startActivityForResult(intent, RC_BARCODE_CAPTURE);
-        }
+//        if (view.getId() == R.id.addItem) {
+//            // launch barcode activity.
+//            Intent intent = new Intent(this, BarcodeCaptureActivity.class);
+////            intent.putExtra(BarcodeCaptureActivity.AutoFocus, autoFocus.isChecked());
+//            intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
+////            intent.putExtra(BarcodeCaptureActivity.UseFlash, useFlash.isChecked());
+//
+//            startActivityForResult(intent, RC_BARCODE_CAPTURE);
+//        }
 
     }
 
@@ -98,34 +95,37 @@ public class MainActivity extends Activity implements View.OnClickListener {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_BARCODE_CAPTURE) {
-            if (resultCode == CommonStatusCodes.SUCCESS) {
-                if (data != null) {
-
-                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    statusMessage.setText(R.string.barcode_success);
-                    barcodeValue.setText(barcode.displayValue);
-                    Log.d(TAG, "Barcode read: " + barcode.displayValue);
-
-
-                    Counter_A++;
-                    Amount_A = Counter_A;
-                    TextView textView = (TextView) findViewById(R.id.listPA);
-                    textView.setText("Quantity A\n       " + Amount_A);
-
-
-                } else {
-                    statusMessage.setText(R.string.barcode_failure);
-                    Log.d(TAG, "No barcode captured, intent data is null");
-                }
-            } else {
-                statusMessage.setText(String.format(getString(R.string.barcode_error),
-                        CommonStatusCodes.getStatusCodeString(resultCode)));
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+//        if (requestCode == RC_BARCODE_CAPTURE) {
+//            if (resultCode == CommonStatusCodes.SUCCESS) {
+//                if (data != null) {
+//
+////                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+////                    statusMessage.setText(R.string.barcode_success);
+////                    barcodeValue.setText(barcode.displayValue);
+////                    Log.d(TAG, "Barcode read: " + barcode.displayValue);
+////
+////
+////                    Counter_A++;
+////                    Amount_A = Counter_A;
+////                    TextView textView = (TextView) findViewById(R.id.listPA);
+////                    textView.setText("Quantity A\n       " + Amount_A);
+//
+//
+//                } else {
+//                    statusMessage.setText(R.string.barcode_failure);
+//                    Log.d(TAG, "No barcode captured, intent data is null");
+//                }
+//            } else {
+//                statusMessage.setText(String.format(getString(R.string.barcode_error),
+//                        CommonStatusCodes.getStatusCodeString(resultCode)));
+//            }
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
