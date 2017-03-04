@@ -113,6 +113,33 @@
             android:layout_marginTop="13dp"
             android:text="History" />
 
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/startclock"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="19dp"
+            android:text="Time" />
+
+        <Button
+            android:id="@+id/startclock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/stopclock"
+            android:layout_alignBottom="@+id/stopclock"
+            android:layout_centerHorizontal="true"
+            android:text="Start" />
+
+        <Button
+            android:id="@+id/stopclock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/graph"
+            android:layout_alignBottom="@+id/graph"
+            android:layout_toEndOf="@+id/rateofcount"
+            android:text="STOP" />
+
 
         <!--<com.jjoe64.graphview.GraphView-->
         <!--android:layout_width="match_parent"-->

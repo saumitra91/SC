@@ -77,8 +77,15 @@ public class BTMainActivity extends Activity {
     private static int sTabPB = 0;
     private static int sTabPC = 0;
     private static int sTabPD = 0;
+    final int MSG_START_TIMER = 0;
+    final int MSG_STOP_TIMER = 1;
+    final int MSG_UPDATE_TIMER = 2;
+    final int REFRESH_RATE = 100;
     TextView mRemoteRssiVal;
     RadioGroup mRg;
+    Stopwatch timer = new Stopwatch();
+    TextView tvTextView;
+    Button btnStart, btnStop;
     private int mState = UART_PROFILE_DISCONNECTED;
     private UartService mService = null;
     private BluetoothDevice mDevice = null;
@@ -87,10 +94,65 @@ public class BTMainActivity extends Activity {
     private ArrayAdapter<String> listAdapter;
     private Button btnConnectDisconnect, btnSend, btnHistory;
     private EditText edtMessage;
+    Handler msHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_START_TIMER:
+                    timer.start(); //start timer
+                    String message = "Timer started ";
+                    byte[] value;
+                    try {
+                        //send data to service
+                        value = message.getBytes("UTF-8");
+                        mService.writeRXCharacteristic(value);
+                        //Update the log with time stamp
+                        String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                        listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+                        messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                        edtMessage.setText("");
+                    } catch (UnsupportedEncodingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    msHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
+                    break;
+
+                case MSG_UPDATE_TIMER:
+                    tvTextView.setText("" + timer.getElapsedTime());
+                    msHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE); //text view is updated every second,
+                    break;                                  //though the timer is still running
+                case MSG_STOP_TIMER:
+                    msHandler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
+                    timer.stop();//stop timer
+                    String message1 = "Timer stopped ";
+                    byte[] value1;
+                    try {
+                        //send data to service
+                        value = message1.getBytes("UTF-8");
+                        mService.writeRXCharacteristic(value);
+                        //Update the log with time stamp
+                        String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                        listAdapter.add("[" + currentDateTimeString + "] TX: " + message1);
+                        messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                        edtMessage.setText("");
+                    } catch (UnsupportedEncodingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    tvTextView.setText("" + timer.getElapsedTime());
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
     //Project specific variables
     private int countsCompleted = 0;
     private ArrayList<String> list = new ArrayList<String>();
-
     private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
@@ -109,6 +171,8 @@ public class BTMainActivity extends Activity {
                         //
                         edtMessage.setEnabled(true);
                         btnSend.setEnabled(true);
+                        btnStart.setEnabled(true);
+                        btnStop.setEnabled(true);
                         //Kota **************************
 //                        mbuttonB.setEnabled(true);
 //                        mbuttonF.setEnabled(true);
@@ -325,6 +389,26 @@ public class BTMainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        tvTextView = (TextView) findViewById(R.id.textView2);
+        btnStart = (Button) findViewById(R.id.startclock);
+        btnStart.setEnabled(false);
+        btnStop = (Button) findViewById(R.id.stopclock);
+        btnStop.setEnabled(false);
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                msHandler.sendEmptyMessage(MSG_START_TIMER);
+
+            }
+        });
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                msHandler.sendEmptyMessage(MSG_STOP_TIMER);
+            }
+        });
+
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
@@ -346,22 +430,7 @@ public class BTMainActivity extends Activity {
         btnConnectDisconnect = (Button) findViewById(R.id.btn_select);
         btnSend = (Button) findViewById(R.id.sendButton);
         btnHistory = (Button) findViewById(R.id.graph);
-        //Kota add 12/13/2016 from this line***********************************
 
-//        mbuttonF = (Button) findViewById(R.id.buttonF);
-//        mbuttonB = (Button) findViewById(R.id.buttonB);
-//        mbuttonL = (Button) findViewById(R.id.buttonL);
-//        mbuttonR = (Button) findViewById(R.id.buttonR);
-//        mbuttonS = (Button) findViewById(R.id.buttonS);
-//
-//
-//        mcancelPA = (Button) findViewById(R.id.cancelPA);
-//        mcancelPB = (Button) findViewById(R.id.cancelPB);
-//        mcancelPC = (Button) findViewById(R.id.cancelPC);
-//        mcancelPD = (Button) findViewById(R.id.cancelPD);
-//
-//        mbutton_check = (Button) findViewById(R.id.button_check);
-        //by this line**********************************************************
 
         edtMessage = (EditText) findViewById(R.id.sendText);
         service_init();
