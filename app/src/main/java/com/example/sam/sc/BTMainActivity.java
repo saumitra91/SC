@@ -317,10 +317,10 @@ public class BTMainActivity extends Activity {
 
     private void calculatePI() {
 
-        PI = (TP / 1000) * (countsCompleted + 1) * (averageRateofCount + 1);
-        System.out.println("TP=" + TP);
-        System.out.println("countsCompleted=" + countsCompleted);
-        System.out.println("averageRateofCount=" + averageRateofCount);
+        PI = Math.log10(((TP / 1000) * (countsCompleted) * 10)) * (averageRateofCount + 1);
+//        System.out.println("TP=" + TP);
+//        System.out.println("countsCompleted=" + countsCompleted);
+//        System.out.println("averageRateofCount=" + averageRateofCount);
 //        TextView PerformanceIndex = (TextView) findViewById(R.id.PI);
         DecimalFormat PIDecimal = new DecimalFormat("#.##");
         PIValue.setText(PIDecimal.format(PI));
