@@ -226,7 +226,8 @@ void loop()
   Serial.println(sensor_value);
   //delay(200);
   while (sensor_value < VTHIGH)
-  { Hall_input();};
+  { Hall_input();
+  Count=0;};
   time0=millis();
     while (sensor_value > VTLOW)
     {
@@ -273,17 +274,18 @@ void loop()
 //// Check for incoming characters from Bluefruit
 //
 //Serial.println(ble.buffer);
-//temp=ble.buffer;
-//Serial.println("Temp variable value is <"+temp+">");
-//  if (temp == "Timer started") {
+temp=ble.buffer;
+Serial.println("Temp variable value is <"+temp+">");
+  if (temp == "Timer started") {
 //    begin_count=true;
-//    Count=0;
-//  }
-//
-//  if (temp == "Timer stopped") {
+    Count=0;
+  }
+
+  if (temp == "Timer stopped") {
 //    begin_count=false;
-//    Count=0;
-//  }
+    Count=0;
+    t_pressed_ms=0;
+  }
 //  Serial.print(F("[Recv] ")); Serial.println(ble.buffer);
 
 }

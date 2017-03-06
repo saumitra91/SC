@@ -55,7 +55,7 @@ public class GraphActivity extends AppCompatActivity {
 
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Trials");
-        graph.getGridLabelRenderer().setVerticalAxisTitle("PI");
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Performance Index");
 
 
 //        graph.canScrollHorizontally(1);

@@ -48,7 +48,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -99,7 +98,7 @@ public class BTMainActivity extends Activity {
     private ListView messageListView;
     private ArrayAdapter<String> listAdapter;
     private Button btnConnectDisconnect, btnSend, btnHistory;
-    private EditText edtMessage;
+    //    private EditText edtMessage;
     private int i = 1;
     Handler msHandler = new Handler() {
         @Override
@@ -118,7 +117,7 @@ public class BTMainActivity extends Activity {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
                         messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                        edtMessage.setText("");
+//                        edtMessage.setText("");
                     } catch (UnsupportedEncodingException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -144,7 +143,7 @@ public class BTMainActivity extends Activity {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         listAdapter.add("[" + currentDateTimeString + "] TX: " + message1);
                         messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                        edtMessage.setText("");
+//                        edtMessage.setText("");
                     } catch (UnsupportedEncodingException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -178,8 +177,8 @@ public class BTMainActivity extends Activity {
                         //Kota add 12/13/2016
 
                         //
-                        edtMessage.setEnabled(true);
-                        btnSend.setEnabled(true);
+//                        edtMessage.setEnabled(true);
+//                        btnSend.setEnabled(true);
                         btnStart.setEnabled(true);
                         btnStop.setEnabled(true);
                         //Kota **************************
@@ -210,8 +209,10 @@ public class BTMainActivity extends Activity {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_DISCONNECT_MSG");
                         btnConnectDisconnect.setText("Connect");
-                        edtMessage.setEnabled(false);
-                        btnSend.setEnabled(false);
+//                        edtMessage.setEnabled(false);
+//                        btnSend.setEnabled(false);
+                        btnStart.setEnabled(false);
+                        btnStop.setEnabled(false);
                         //KOTA **************************
 //                        mbuttonB.setEnabled(false);
 //                        mbuttonF.setEnabled(false);
@@ -403,9 +404,10 @@ public class BTMainActivity extends Activity {
             String textInBetween = matcher.group(1); // Since (.*?) is capturing group 1
             System.out.println(textInBetween);
 
-            count.setText(textInBetween);
+
             int textFromBT = Integer.parseInt(textInBetween);
-            countsCompleted = textFromBT;
+            countsCompleted = countsCompleted + textFromBT;
+            count.setText((String.valueOf(countsCompleted)));
             double XXX = timer.getElapsedTime();
             double timervalue = (XXX) / 1000;
 
@@ -432,7 +434,7 @@ public class BTMainActivity extends Activity {
             String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
             listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
             messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-            edtMessage.setText("");
+//            edtMessage.setText("");
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -463,6 +465,7 @@ public class BTMainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 msHandler.sendEmptyMessage(MSG_STOP_TIMER);
+                countsCompleted = 0;
             }
         });
 
@@ -485,11 +488,11 @@ public class BTMainActivity extends Activity {
         messageListView.setAdapter(listAdapter);
         messageListView.setDivider(null);
         btnConnectDisconnect = (Button) findViewById(R.id.btn_select);
-        btnSend = (Button) findViewById(R.id.sendButton);
+//        btnSend = (Button) findViewById(R.id.sendButton);
         btnHistory = (Button) findViewById(R.id.graph);
 
 
-        edtMessage = (EditText) findViewById(R.id.sendText);
+//        edtMessage = (EditText) findViewById(R.id.sendText);
         service_init();
 //TODO
 //        public void sendMessage(View view) {
@@ -527,28 +530,28 @@ public class BTMainActivity extends Activity {
             }
         });
         // Handle Send button
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText editText = (EditText) findViewById(R.id.sendText);
-                String message = editText.getText().toString();
-                byte[] value;
-                try {
-                    //send data to service
-                    value = message.getBytes("UTF-8");
-                    mService.writeRXCharacteristic(value);
-                    //Update the log with time stamp
-                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    edtMessage.setText("");
-                } catch (UnsupportedEncodingException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        });
+//        btnSend.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                EditText editText = (EditText) findViewById(R.id.sendText);
+//                String message = editText.getText().toString();
+//                byte[] value;
+//                try {
+//                    //send data to service
+//                    value = message.getBytes("UTF-8");
+//                    mService.writeRXCharacteristic(value);
+//                    //Update the log with time stamp
+//                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+//                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+//                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+//                    edtMessage.setText("");
+//                } catch (UnsupportedEncodingException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
 
 
         btnHistory.setOnClickListener(new View.OnClickListener() {
