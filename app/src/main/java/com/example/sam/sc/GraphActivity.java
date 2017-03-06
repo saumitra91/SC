@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 
@@ -46,7 +48,17 @@ public class GraphActivity extends AppCompatActivity {
 //        });
 
         graph.addSeries(series);
-        graph.canScrollHorizontally(1);
+//        graph.computeScroll();
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumFractionDigits(0);
+        nf.setMinimumIntegerDigits(1);
+
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
+        graph.getGridLabelRenderer().setHorizontalAxisTitle("Trials");
+        graph.getGridLabelRenderer().setVerticalAxisTitle("PI");
+
+
+//        graph.canScrollHorizontally(1);
     }
 
     @Override

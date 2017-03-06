@@ -74,6 +74,7 @@ public class BTMainActivity extends Activity {
     private static final int UART_PROFILE_DISCONNECTED = 21;
     private static final int STATE_OFF = 10;
     private static final int RC_HANDLE_BT_FINE_PERM = 2;
+    public static ArrayList<XYValue> xyValueArray = new ArrayList<>();
     private static int sTabPA = 0;
     private static int sTabPB = 0;
     private static int sTabPC = 0;
@@ -88,7 +89,6 @@ public class BTMainActivity extends Activity {
     TextView TimerValue;
     TextView PIValue;
     Button btnStart, btnStop;
-    ArrayList<XYValue> xyValueArray = new ArrayList<>();
     private Integer TP = 0;
     private double PI = 0;
     private double averageRateofCount = 0;
@@ -100,6 +100,7 @@ public class BTMainActivity extends Activity {
     private ArrayAdapter<String> listAdapter;
     private Button btnConnectDisconnect, btnSend, btnHistory;
     private EditText edtMessage;
+    private int i = 1;
     Handler msHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -149,6 +150,8 @@ public class BTMainActivity extends Activity {
                         e.printStackTrace();
                     }
                     TimerValue.setText("" + timer.getElapsedTime());
+                    xyValueArray.add(new XYValue(i++, PI));
+
                     break;
 
                 default:
@@ -452,7 +455,7 @@ public class BTMainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 msHandler.sendEmptyMessage(MSG_START_TIMER);
-                xyValueArray.clear();
+//                xyValueArray.clear();
 
             }
         });
