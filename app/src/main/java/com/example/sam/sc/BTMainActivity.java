@@ -317,7 +317,7 @@ public class BTMainActivity extends Activity {
 
     private void calculatePI() {
 
-        PI = Math.log10(((TP / 1000) * (countsCompleted) * 10)) * (averageRateofCount + 1);
+        PI = Math.log10((((TP / 1000) * (countsCompleted) + 1) * 10)) * (averageRateofCount + 1);
 //        System.out.println("TP=" + TP);
 //        System.out.println("countsCompleted=" + countsCompleted);
 //        System.out.println("averageRateofCount=" + averageRateofCount);
