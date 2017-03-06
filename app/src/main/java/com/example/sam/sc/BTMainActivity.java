@@ -58,6 +58,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -84,8 +85,13 @@ public class BTMainActivity extends Activity {
     TextView mRemoteRssiVal;
     RadioGroup mRg;
     Stopwatch timer = new Stopwatch();
-    TextView tvTextView;
+    TextView TimerValue;
+    TextView PIValue;
     Button btnStart, btnStop;
+    ArrayList<XYValue> xyValueArray = new ArrayList<>();
+    private Integer TP = 0;
+    private double PI = 0;
+    private double averageRateofCount = 0;
     private int mState = UART_PROFILE_DISCONNECTED;
     private UartService mService = null;
     private BluetoothDevice mDevice = null;
@@ -101,7 +107,7 @@ public class BTMainActivity extends Activity {
             switch (msg.what) {
                 case MSG_START_TIMER:
                     timer.start(); //start timer
-                    String message = "Timer started ";
+                    String message = "Timer started";
                     byte[] value;
                     try {
                         //send data to service
@@ -121,13 +127,13 @@ public class BTMainActivity extends Activity {
                     break;
 
                 case MSG_UPDATE_TIMER:
-                    tvTextView.setText("" + timer.getElapsedTime());
+                    TimerValue.setText("" + timer.getElapsedTime());
                     msHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE); //text view is updated every second,
                     break;                                  //though the timer is still running
                 case MSG_STOP_TIMER:
                     msHandler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
                     timer.stop();//stop timer
-                    String message1 = "Timer stopped ";
+                    String message1 = "Timer stopped";
                     byte[] value1;
                     try {
                         //send data to service
@@ -142,7 +148,7 @@ public class BTMainActivity extends Activity {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    tvTextView.setText("" + timer.getElapsedTime());
+                    TimerValue.setText("" + timer.getElapsedTime());
                     break;
 
                 default:
@@ -150,8 +156,8 @@ public class BTMainActivity extends Activity {
             }
         }
     };
-    //Project specific variables
     private int countsCompleted = 0;
+    //Project specific variables
     private ArrayList<String> list = new ArrayList<String>();
     private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
 
@@ -242,14 +248,22 @@ public class BTMainActivity extends Activity {
                         try {
                             String text = new String(txValue, "UTF-8");
                             boolean flag = false;
+//                            if (text.contains("count")) {
+//                                updateCount(text);
+//
+//                            }
+                            String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                            listAdapter.add("[" + currentDateTimeString + "] RX: " + text);
+                            messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                             if (text.contains("count")) {
                                 updateCount(text);
 
                             }
-                            String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                            listAdapter.add("[" + currentDateTimeString + "] RX: " + text);
-                            messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                            if (text.contains("TP")) {
+                                updateTP(text);
 
+                            }
+                            calculatePI();
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
                         }
@@ -301,6 +315,43 @@ public class BTMainActivity extends Activity {
         return intentFilter;
     }
 
+    private void calculatePI() {
+
+        PI = (TP / 1000) * (countsCompleted + 1) * (averageRateofCount + 1);
+        System.out.println("TP=" + TP);
+        System.out.println("countsCompleted=" + countsCompleted);
+        System.out.println("averageRateofCount=" + averageRateofCount);
+//        TextView PerformanceIndex = (TextView) findViewById(R.id.PI);
+        DecimalFormat PIDecimal = new DecimalFormat("#.##");
+        PIValue.setText(PIDecimal.format(PI));
+
+    }
+
+    private void updateTP(String text) {
+
+
+//        TextView count = (TextView) findViewById(R.id.count);
+//        TextView rateOfCount = (TextView) findViewById(R.id.rateofcount);
+
+        //updating TP
+        String regexString = Pattern.quote("TP<") + "(.*?\\d+)" + Pattern.quote(">");
+        Pattern pattern = Pattern.compile(regexString);
+// text contains the full text that you want to extract data
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            String textInBetween = matcher.group(1); // Since (.*?) is capturing group 1
+            System.out.println(textInBetween);
+            TP = Integer.parseInt(textInBetween);
+//            count.setText(textInBetween);
+//            long averageRateofCount= (Long.getLong(textInBetween))/((timer.getElapsedTime())/1000);
+//            //TODO
+//            rateOfCount.setText(String.valueOf(averageRateofCount));
+//            xyValueArray.add(new XYValue(averageRateofCount,(timer.getElapsedTime())/1000));
+//            list.add(textInBetween);
+        }
+        //TODO Add Speed here
+    }
+
 //    private void checkweight(String text) {
 //        TextView weightState = (TextView) findViewById(R.id.weight);
 //        String regexString = Pattern.quote("<") + "(.*?\\d+)" + Pattern.quote(">");
@@ -341,26 +392,26 @@ public class BTMainActivity extends Activity {
         TextView rateOfCount = (TextView) findViewById(R.id.rateofcount);
 
         //TODO Calculate the counts using a counter
-        String regexString = Pattern.quote("<") + "(.*?\\d+)" + Pattern.quote(">");
+        String regexString = Pattern.quote("count<") + "(.*?\\d+)" + Pattern.quote(">");
         Pattern pattern = Pattern.compile(regexString);
 // text contains the full text that you want to extract data
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             String textInBetween = matcher.group(1); // Since (.*?) is capturing group 1
             System.out.println(textInBetween);
-//            String flag = null;
-//            Double ObtainedWeight = Double.parseDouble(textInBetween);
-//            Double Error = (TotalWeight - ObtainedWeight) % 10;
-//            System.out.println(Error);
-//            if (Error == 0) {
-//                flag = "true";
-//                weightState.setText("Weight matches!");
-//            } else {
-//                flag = "false";
-//                weightState.setText("Weight doesn't match!");
-//            }
+
             count.setText(textInBetween);
-            rateOfCount.setText(textInBetween);
+            int textFromBT = Integer.parseInt(textInBetween);
+            countsCompleted = textFromBT;
+            double XXX = timer.getElapsedTime();
+            double timervalue = (XXX) / 1000;
+
+            averageRateofCount = countsCompleted / (timervalue);
+
+            //TODO
+            DecimalFormat ROCDec = new DecimalFormat("#.##");
+            rateOfCount.setText(String.valueOf(ROCDec.format(averageRateofCount)));
+//            xyValueArray.add(new XYValue(averageRateofCount,(timer.getElapsedTime())/1000));
             list.add(textInBetween);
         }
         //TODO Add Speed here
@@ -390,7 +441,9 @@ public class BTMainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        tvTextView = (TextView) findViewById(R.id.textView2);
+
+        TimerValue = (TextView) findViewById(R.id.Timer);
+        PIValue = (TextView) findViewById(R.id.PI);
         btnStart = (Button) findViewById(R.id.startclock);
         btnStart.setEnabled(false);
         btnStop = (Button) findViewById(R.id.stopclock);
@@ -399,6 +452,7 @@ public class BTMainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 msHandler.sendEmptyMessage(MSG_START_TIMER);
+                xyValueArray.clear();
 
             }
         });
@@ -836,9 +890,9 @@ public class BTMainActivity extends Activity {
 
     public void showGraph(View view) {
         Intent intent = new Intent(this, GraphActivity.class);
-
+        GraphActivity.XY = xyValueArray;
 //        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
+//        intent.putExtra("XYValues:", xyValueArray);
         startActivity(intent);
         finish();
     }

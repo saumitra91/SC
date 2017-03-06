@@ -9,7 +9,12 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.ArrayList;
+
+
 public class GraphActivity extends AppCompatActivity {
+
+    protected static ArrayList<XYValue> XY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,14 +24,27 @@ public class GraphActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
+//        intent.getIntegerArrayListExtra("XYValue:");
         GraphView graph = (GraphView) findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+        for (int i = 0; i < XY.size(); i++) {
+            try {
+                double x = XY.get(i).getX();
+                double y = XY.get(i).getY();
+                series.appendData(new DataPoint(x, y), true, 1000);
+            } catch (IllegalArgumentException e) {
+//                Log.e(TAG, "createScatterPlot: IllegalArgumentException: " + e.getMessage() );
+                e.printStackTrace();
+            }
+        }
+//        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
+//                new DataPoint(0, 1),
+//                new DataPoint(1, 5),
+//                new DataPoint(2, 3),
+//                new DataPoint(3, 2),
+//                new DataPoint(4, 6)
+//        });
+
         graph.addSeries(series);
         graph.canScrollHorizontally(1);
     }

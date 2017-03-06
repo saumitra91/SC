@@ -66,34 +66,41 @@
 
             android:layout_alignBaseline="@+id/sendButton"
             android:layout_alignBottom="@+id/sendButton"
-            android:layout_toEndOf="@+id/sendText"
-            android:text="Count" />
+            android:layout_alignStart="@+id/rateofcountlabel"
+            android:text="Count :"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/rateofcountlabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_alignStart="@+id/countlabel"
-            android:layout_below="@+id/sendButton"
-            android:text="Rate of Count" />
+            android:layout_alignTop="@+id/btn_select"
+            android:layout_centerHorizontal="true"
+            android:text="Rate of Count :"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/rateofcount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/rateofcountlabel"
-            android:layout_below="@+id/rateofcountlabel"
-            android:text="Rate" />
+            android:layout_alignBaseline="@+id/rateofcountlabel"
+            android:layout_alignBottom="@+id/rateofcountlabel"
+            android:layout_alignEnd="@+id/count"
+            android:text="rate"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_alignStart="@+id/countlabel"
-            android:layout_below="@+id/countlabel"
-            android:text="Number" />
+            android:layout_alignBaseline="@+id/countlabel"
+            android:layout_alignBottom="@+id/countlabel"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="25dp"
+            android:text="Number"
+            android:textSize="20sp" />
 
         <ListView
             android:id="@+id/listMessage"
@@ -114,7 +121,18 @@
             android:text="History" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/PI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/listMessage"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="23dp"
+            android:layout_marginStart="27dp"
+            android:text="PI"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/Timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/startclock"
@@ -128,7 +146,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/stopclock"
             android:layout_alignBottom="@+id/stopclock"
-            android:layout_centerHorizontal="true"
+            android:layout_alignStart="@+id/rateofcountlabel"
             android:text="Start" />
 
         <Button
@@ -137,8 +155,19 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/graph"
             android:layout_alignBottom="@+id/graph"
-            android:layout_toEndOf="@+id/rateofcount"
+            android:layout_toEndOf="@+id/rateofcountlabel"
             android:text="STOP" />
+
+        <TextView
+            android:id="@+id/PILabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/PI"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="10dp"
+            android:text="Performance Index"
+            android:textSize="20sp" />
 
 
         <!--<com.jjoe64.graphview.GraphView-->
