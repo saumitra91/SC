@@ -46,10 +46,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,6 +100,7 @@ public class BTMainActivity extends Activity {
     private ListView messageListView;
     private ArrayAdapter<String> listAdapter;
     private Button btnConnectDisconnect, btnSend, btnHistory;
+
     //    private EditText edtMessage;
     private int i = 1;
     Handler msHandler = new Handler() {
@@ -174,14 +177,14 @@ public class BTMainActivity extends Activity {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_CONNECT_MSG");
                         btnConnectDisconnect.setText("Disconnect");
-                        //Kota add 12/13/2016
+
 
                         //
 //                        edtMessage.setEnabled(true);
 //                        btnSend.setEnabled(true);
                         btnStart.setEnabled(true);
                         btnStop.setEnabled(true);
-                        //Kota **************************
+
 //                        mbuttonB.setEnabled(true);
 //                        mbuttonF.setEnabled(true);
 //                        mbuttonL.setEnabled(true);
@@ -213,7 +216,7 @@ public class BTMainActivity extends Activity {
 //                        btnSend.setEnabled(false);
                         btnStart.setEnabled(false);
                         btnStop.setEnabled(false);
-                        //KOTA **************************
+
 //                        mbuttonB.setEnabled(false);
 //                        mbuttonF.setEnabled(false);
 //                        mbuttonL.setEnabled(false);
@@ -446,7 +449,14 @@ public class BTMainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_array, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
         TimerValue = (TextView) findViewById(R.id.Timer);
         PIValue = (TextView) findViewById(R.id.PI);
         btnStart = (Button) findViewById(R.id.startclock);
@@ -467,6 +477,32 @@ public class BTMainActivity extends Activity {
                 msHandler.sendEmptyMessage(MSG_STOP_TIMER);
                 countsCompleted = 0;
             }
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Context context = getApplicationContext();
+                CharSequence text = "Item Selected!";
+                int duration = Toast.LENGTH_SHORT;
+                String item = parentView.getItemAtPosition(position).toString();
+
+                // Showing selected spinner item
+                Toast.makeText(parentView.getContext(), "Selected: " + item, Toast.LENGTH_SHORT).show();
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                Context context = getApplicationContext();
+                CharSequence text = "Nothing Selected!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+
         });
 
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -562,7 +598,6 @@ public class BTMainActivity extends Activity {
             }
         });
         // Set initial UI state
-//Kota add 12/13/2016 from this line***************************************************************
 
 
 //        mbuttonF.setOnClickListener(new View.OnClickListener() {

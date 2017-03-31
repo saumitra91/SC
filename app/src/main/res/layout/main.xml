@@ -167,6 +167,15 @@
             android:text="Performance Index"
             android:textSize="20sp" />
 
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/PILabel"
+            android:layout_marginBottom="15dp"
+            android:layout_toEndOf="@+id/countlabel"
+            android:backgroundTint="@android:drawable/spinner_background" />
+
 
         <!--<com.jjoe64.graphview.GraphView-->
         <!--android:layout_width="match_parent"-->

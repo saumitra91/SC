@@ -67,5 +67,10 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_graph">History</string>
+    <string-array name="spinner_array">
+        <item>Equipment1</item>
+        <item>Equipment2</item>
+
+    </string-array>
 
 </resources>

@@ -13,8 +13,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-//Kota add 12/13/2016
-//by this line
 
 public class MainActivity extends Activity implements View.OnClickListener {
     public static final int RC_BARCODE_CAPTURE = 9001;
@@ -24,6 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //    private CompoundButton useFlash;
     public TextView statusMessage;
     private ListView listView;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -36,7 +35,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Kota add 12/13/2016
 
         //by thi line
 
