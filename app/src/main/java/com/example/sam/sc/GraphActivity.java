@@ -1,6 +1,7 @@
 package com.example.sam.sc;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -28,7 +29,8 @@ public class GraphActivity extends AppCompatActivity {
         Intent intent = getIntent();
 //        intent.getIntegerArrayListExtra("XYValue:");
         GraphView graph = (GraphView) findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+        //LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+        PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>();
         for (int i = 0; i < XY.size(); i++) {
             try {
                 double x = XY.get(i).getX();
@@ -48,6 +50,8 @@ public class GraphActivity extends AppCompatActivity {
 //        });
 
         graph.addSeries(series);
+        series.setShape(PointsGraphSeries.Shape.TRIANGLE);
+        series.setColor(Color.RED);
 //        graph.computeScroll();
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumFractionDigits(0);
