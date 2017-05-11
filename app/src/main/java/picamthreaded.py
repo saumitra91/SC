@@ -52,7 +52,7 @@ camera.close()
 # list of tracked points
 # greenLower = (29, 86, 6)
 # greenUpper = (64, 255, 255)
-greenLower = (40, 80, 6)
+greenLower = (45, 80, 6)
 greenUpper = (70, 255, 255)
 pts = deque(maxlen=256)
 
@@ -114,10 +114,10 @@ while fps._numFrames < 10000:
     if Y<Y_Uth:
         flag = 1
 
-    if Y<Y_Mth and flag>0:
+    if Y>Y_Uth and Y<Y_Lth and flag>0:
         flag =flag +1
 
-    if Y>Y_Lth and flag >=4:
+    if Y>Y_Lth and flag >=3:
         count = count +1
         GPIO.output(25, GPIO.HIGH)
         time.sleep(.0001)
