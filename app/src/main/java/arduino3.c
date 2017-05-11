@@ -29,16 +29,19 @@ any redistribution
 #define ARRAY_SIZE 10
 unsigned int myo_sen=0;
 float myo_sen_volt;
-float myo_sen_squared;
+float myo_sen_squared, myo_wind_max,myo_wind_min,myo_wind_scaled, myo_wind_avg_cum;
 float myo_wind[ARRAY_SIZE];
 int Count;
 int sensor_value = 0;
 unsigned long time1;
 String count_string="";
-static char myo_wind_avg_char[15];
-String myo_wind_avg_string="";
+static char myo_wind_scaled_char[15];
+String myo_wind_scaled_string="";
 String samples_string="";
 String temp;
+String fmyo_wind_scaled_string = "";
+String fsamples_string = "";
+String fcount_string = "";
 void call_count();
 unsigned long int samples;
 /*=========================================================================
@@ -222,10 +225,32 @@ void loop()
   }
 
   myo_wind_avg = myo_wind_avg/ARRAY_SIZE;
+  myo_wind_avg_cum = myo_wind_avg_cum + myo_wind_avg;
+  if(samples ==ARRAY_SIZE+1)
+  {
+    myo_wind_max = 0;
+    myo_wind_min = 100;
+    myo_wind_scaled = 0;
+  }
+  else
+  {
+    myo_wind_max = max(myo_wind_avg, myo_wind_max);
+    myo_wind_min = min(myo_wind_avg, myo_wind_min);
+    myo_wind_scaled = map(myo_wind_avg_cum,samples* myo_wind_min, samples*myo_wind_max, 0, 100);
+  }
 
-  Serial.println("Myo Average Squared Output = ");
-  Serial.println(myo_wind_avg);
+  Serial.print("\n");
+  Serial.print("Myo Average Squared Output = ");
+  Serial.println(myo_wind_avg_cum);
 
+  Serial.print("Myo Average Squared Max = ");
+  Serial.println(samples*myo_wind_max);
+
+    Serial.print("Myo Average Squared Min = ");
+  Serial.println(samples* myo_wind_min);
+
+      Serial.print("Myo Average Squared Scaled = ");
+  Serial.println(myo_wind_scaled);
   
   Serial.print("\n");
   Serial.print("Count = ");
@@ -236,23 +261,25 @@ void loop()
   Serial.print("\n");
   count_string= String(abs(Count));
   
-  dtostrf(myo_wind_avg,7, 3,  myo_wind_avg_char);
-  strcat(myo_wind_avg_char,'\0');
-  myo_wind_avg_string= String((myo_wind_avg));
-  Serial.println(myo_wind_avg_string);
+  dtostrf(myo_wind_scaled,7, 3,  myo_wind_scaled_char);
+  strcat(myo_wind_scaled_char,'\0');
+  myo_wind_scaled_string= String((myo_wind_scaled_char));
+  Serial.println(myo_wind_scaled_string);
   samples_string= String(abs(samples));
-  ble.println("count<"+count_string+">");
-  delay(5);
-  ble.flush();
-  delay(5);
-  ble.println("myo<"+myo_wind_avg_string+">");
-  delay(5);
-  ble.flush();
-  delay(5);
-  ble.println("samples<"+samples_string+">");
-  delay(5);
-  // ble.waitForOK();
-  ble.flush();
+
+  fmyo_wind_scaled_string= fillwithspaces(myo_wind_scaled_string);
+  fsamples_string = fillwithspaces(samples_string);
+  fcount_string = fillwithspaces(count_string);
+
+
+
+  ble.println("c"+fcount_string);
+
+  ble.println("m"+fmyo_wind_scaled_string);
+
+
+  ble.println("s"+fsamples_string);
+
   delay(200);
 }
 
@@ -260,3 +287,18 @@ void call_count()
 {
   Count++;
 }
+
+String fillwithspaces(String a)
+{
+  a = '<'+ a + '>';
+  if (a.length() < 16)
+  {
+    while (a.length() < 16)
+      {a = a + ' ';
+     // Serial.println(a);
+      }
+  return a;
+  }
+
+}
+
